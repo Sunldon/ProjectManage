@@ -1,6 +1,3 @@
-# django-td-react
-
-todo app off Django and React.
 
 ### Requirements
 * Python3
