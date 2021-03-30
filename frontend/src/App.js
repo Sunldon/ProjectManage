@@ -14,7 +14,7 @@ class App extends Component {
         startDate: "",
         endDate: "",
         completed: false,
-        projectManager:''
+        projectManager: ''
       },
       todoList: []
     };
@@ -38,6 +38,16 @@ class App extends Component {
     return this.setState({ viewCompleted: false });
   };
 
+  handleChange = e => {
+    if (e.keyCode == 13) {
+      console.log('回车事件')
+      let password = e.target.value;
+      console.log('password', password)
+      this.displayUpDown = password === "sssssss!"
+      return this.setState({ displayUpDown: this.displayUpDown })
+    }
+  };
+
   renderTabList = () => {
     return (
       <div className="my-5 tab-list">
@@ -53,6 +63,12 @@ class App extends Component {
         >
           Incomplete
         </span>
+        <input
+          type="text"
+          name="title"
+          onKeyUp={this.handleChange}
+          placeholder="Enter password"
+        />
       </div>
     );
   };
@@ -63,6 +79,8 @@ class App extends Component {
     const newItems = this.state.todoList.filter(
       item => item.completed === viewCompleted
     );
+    const { displayUpDown } = this.state;
+    console.log('displayUpDown', displayUpDown)
     newItems.sort((a, b) => (a.priority - b.priority));
     console.log('newItems', newItems)
     return (
@@ -71,16 +89,16 @@ class App extends Component {
           // className="list-group-item d-flex justify-content-between align-items-center"
           newItems.map((item, index) => (
             <table key={item.id} border="1" className={'tb-tr'}>
-              { index == 0 && 
+              { index == 0 &&
                 <thead>
-                <tr>
-                  <th className={'text-description'}>任务描述</th>
-                  <th className={'text-Date'}>开始日期</th>
-                  <th className={'text-Date'}>结束日期</th>
-                  <th className={'text-Date'}>项目经理</th>
-                  <th className={'btn-description'}></th>
-                </tr>
-                </thead> 
+                  <tr>
+                    <th className={'text-description'}>任务描述</th>
+                    <th className={'text-Date'}>开始日期</th>
+                    <th className={'text-Date'}>结束日期</th>
+                    <th className={'text-Date'}>项目经理</th>
+                    <th className={'btn-description'}></th>
+                  </tr>
+                </thead>
               }
               <tr
                 className={`todo-title mr-2 ${this.state.viewCompleted ? "completed-todo" : ""}`}
@@ -97,20 +115,25 @@ class App extends Component {
                 </td>
                 <td className={'text-Date'}>
                   {item.projectManager}
-                </td>                
+                </td>
+
                 <td className={'btn-description'}>
-                  <button onClick={() => this.editItem(item)}
-                    className="btn btn-secondary mr-2">
-                    {" "}
+                  {displayUpDown &&
+                    <button onClick={() => this.editItem(item)}
+                      className="btn btn-secondary mr-2">
+                      {" "}
                     Edit{" "}
+                    </button>
+                  }
+                  {displayUpDown &&
+                    <button onClick={() => this.handleDelete(item)}
+                      className="btn btn-danger">
+                      Delete
                   </button>
-                  <button onClick={() => this.handleDelete(item)}
-                    className="btn btn-danger">
-                    Delete{" "}
-                  </button>
+                  }
                   <div className='btn-group'>
-                    {index > 0 ? <button className='btn btn-primary' onClick={() => this.sortUp(index)}>UP</button> : null}
-                    {index < newItems.length - 1 ? <button className='btn btn-dark' onClick={() => this.sortDown(index)}>Down</button> : null}
+                    {displayUpDown && index > 0 ? <button className='btn btn-primary' onClick={() => this.sortUp(index)}>UP</button> : null}
+                    {displayUpDown && index < newItems.length - 1 ? <button className='btn btn-dark' onClick={() => this.sortDown(index)}>Down</button> : null}
                   </div>
                 </td>
               </tr>
